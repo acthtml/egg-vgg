@@ -1,0 +1,20 @@
+{
+  "name": "egg-vgg",
+  "version": "0.0.4",
+  "description": "egg plugin for vgg",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "eggPlugin": {
+    "name": "vgg",
+    "dependencies": [
+      "easyvue"
+    ]
+  },
+  "dependencies": {
+    "vgg": "^0.0.9",
+    "egg-view-vue": "^1.0.0",
+    "egg-webpack": "^3.0.2",
+    "egg-easyvue": "^0.0.3"
+  }
+}
