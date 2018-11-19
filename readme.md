@@ -38,6 +38,8 @@
     - view          // [必须]eggjs的视图层，可以使空目录。
     - web           // [必须]前端工程目录，例如vgg工程 https://github.com/acthtml/vgg
   - config          // egg配置目录。
+    - config.default.js
+    - plugin.js
   - babel.config.js // [必须]babel配置
   - package.json
 ```
@@ -105,6 +107,12 @@
       package: 'egg-webpack'
     }
   }
+
+  // 设置cookie秘钥。
+  // ${app.baseDir}/config/config.default.js
+  // https://eggjs.org/en/core/cookie-and-session.html#cookie-secret-key
+  exports.keys = '我的cookie秘钥'
+
 ```
 
 ### 1.4 hello world
@@ -195,6 +203,7 @@
 ```js
   // 开本地开发是，我们一般需要开启热加载：
   // /config/config.local.js
+  const webpackConfig = require('vgg/tools/webpack_config');
   exports.webpack = {
     webpackConfigList: [
       webpackConfig('client', 'local', {enableHMR: true}),
@@ -204,6 +213,7 @@
 
   // 在生产环境，我们需要关闭热加载，并将静态资源我们是会放到cdn上的：
   // /config/config.prod.js
+  const webpackConfig = require('vgg/tools/webpack_config');
   exports.webpack = {
     webpackConfigList: [
       webpackConfig('client', 'prod', {
