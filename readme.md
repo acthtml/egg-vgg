@@ -1,12 +1,12 @@
 # egg-vgg
 
-使[eggjs](https://eggjs.org/zh-cn/)支持前端[vgg框架](https://github.com/acthtml/vgg)。
+使[eggjs](https://eggjs.org/zh-cn/)支持前端[vgg](https://github.com/acthtml/vgg)框架。
 
 特性：
 
 - 服务端渲染。
 - 静态资源构建和部署。
-- 开发时的热更新支持。
+- 热更新。
 
 依赖：
 
@@ -21,23 +21,24 @@
 1. 安装依赖
 2. 建立目录
 3. 启用插件
-4. 运行
-5. 写个hello world
+4. 写个hello world
+5. 运行
 6. 构建和部署
 
 ### 1.1 安装依赖
 
 ```bash
-  npm i egg egg-bin egg-scripts vgg egg-vgg
+  npm i vgg egg egg-vgg egg-view-vue egg-webpack@3.0.2 egg-bin egg-scripts
 ```
 
 ### 1.2 建立目录
 
 ```
   - app
-    - web           // 前端工程目录，例如vgg工程 https://github.com/acthtml/vgg
+    - view          // [必须]eggjs的视图层，可以使空目录。
+    - web           // [必须]前端工程目录，例如vgg工程 https://github.com/acthtml/vgg
   - config          // egg配置目录。
-  - babel.config.js // babel配置（必须）
+  - babel.config.js // [必须]babel配置
   - package.json
 ```
 
@@ -106,15 +107,7 @@
   }
 ```
 
-### 1.4 运行
-
-```bash
-  # 开启本地开发模式，具有热加载功能。
-  # 编译完成后访问 http://localhost:7001/app/
-  npm run dev
-```
-
-### 1.5 hello world
+### 1.4 hello world
 
 写个案例练个手，需要新建以下文件：
 
@@ -159,6 +152,14 @@
 ```
 
 刷新``http://localhost:7001/app/``看看有什么变化。
+
+### 1.5 运行
+
+```bash
+  # 开启本地开发模式，具有热加载功能。
+  # 编译完成后访问 http://localhost:7001/app/
+  npm run dev
+```
 
 ### 1.6 构建和部署
 
@@ -249,10 +250,10 @@
     composeContext: (context, ctx) => {
       // 默认包含以下属性
       return {
-        // 页面url
-        url: ctx.url.replace(app.config.vgg.siteRoot, ''),
+        // 页面url，不包含根目录。
+        url: context.url
         // 站点根目录
-        siteRoot: app.config.vgg.siteRoot,
+        siteRoot: context.siteRoot,
         // cookies
         cookies: ctx.cookies,
         // koa ctx
@@ -262,6 +263,7 @@
     // 是否开启[vconsole.log](https://github.com/WechatFE/vConsole)
     enableVConsole: false,
     // 是否开启service worker来缓存前端资源
+    // @todo
     enableServiceWorker: false
   }
 ```

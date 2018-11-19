@@ -1,20 +1,27 @@
 {
   "name": "egg-vgg",
-  "version": "0.2.2",
-  "description": "egg plugin for vgg",
+  "version": "0.3.2",
+  "description": "eggjs的vgg框架插件。",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/acthtml/egg-vgg.git"
+  },
+  "author": "acthtml",
   "eggPlugin": {
     "name": "vgg",
     "dependencies": [
-      "easyvue"
+      "vue"
+    ],
+    "optionalDependencies": [
+      "webpack"
     ]
   },
   "dependencies": {
-    "vgg": "^0.0.11",
+    "vgg": "^0.1.6",
     "egg-view-vue": "^1.0.0",
-    "egg-webpack": "^3.0.2",
-    "egg-easyvue": "^0.0.3"
+    "egg-webpack": "^3.0.2"
   }
 }
