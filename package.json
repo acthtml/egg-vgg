@@ -1,6 +1,6 @@
 {
   "name": "egg-vgg",
-  "version": "0.3.6",
+  "version": "0.4.4",
   "description": "eggjs的vgg框架插件。",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,7 +20,7 @@
     ]
   },
   "dependencies": {
-    "vgg": "^0.1.9",
+    "vgg": "0.2.3",
     "egg-view-vue": "^1.0.0",
     "egg-webpack": "^3.0.2"
   }

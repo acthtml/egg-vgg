@@ -8,61 +8,67 @@ const vconsoleScript = `<script src="https://res.wx.qq.com/mmbizwap/zh_CN/htmled
 
 module.exports = options => {
   return async function vuessr(ctx, next){
-    // 只处理GET请求。
-    if(ctx.method != 'GET') {
+    // 只处理GET和HTML请求。
+    if(ctx.method != 'GET' || !ctx.accepts('html')) {
       return next();
     }
+
+    // 保证同路由的其他中间件，controller能处理请求。
+    await next();
+
+    // 已有中间件处理。
+    if(ctx.body || ctx.status != 404) return;
+
+    // 只处理匹配路由的请求。
     const config = ctx.app.config.vgg;
     const siteRoot = endWithSlash(config.siteRoot || '/app/');
-    // 路由匹配
-    if(endWithSlash(ctx.path).indexOf(siteRoot) == 0){
-      // 页面上下文。
-      let context = {
-        // 页面url
-        url: endWithSlash(ctx.path).replace(siteRoot, '/'),
-        // 站点根目录
-        siteRoot: siteRoot,
-        // cookies
-        cookies: ctx.cookies,
-        // koa ctx
-        ctx: ctx,
-        // 注入wechat vconsole
-        vconsole: config.enableVConsole ? vconsoleScript : '',
-      }
-      let composeContext = config.composeContext;
-      if(!composeContext){
-        composeContext = (context, ctx) => context
-      }
-      if(!_.isFunction(composeContext)){
-        throw new Error('egg-vgg的配置项composeContext需要是个函数。');
-      }
-      context = _.extend({}, context, composeContext(context, ctx));
+    if(endWithSlash(ctx.path).indexOf(siteRoot) != 0) return;
 
-      // 服务端输出。
-      try{
-        await ctx.render('vue-ssr-server-bundle.json',
-          // local context
-          context,
-          // render options
-          // 也可在egg-view-vue中配置。
-          {
-            renderOptions: {
-              // https://ssr.vuejs.org/zh/api.html#runinnewcontext
-              runInNewContext: false,
-            }
+    // 页面上下文。
+    let context = {
+      // 页面url
+      url: endWithSlash(ctx.path).replace(siteRoot, '/'),
+      // 站点根目录
+      siteRoot: siteRoot,
+      // cookies
+      cookies: ctx.cookies,
+      // koa ctx
+      ctx: ctx,
+      // 注入wechat vconsole
+      vconsole: config.enableVConsole ? vconsoleScript : '',
+    }
+    let composeContext = config.composeContext;
+    if(!composeContext){
+      composeContext = (context, ctx) => context
+    }
+    if(!_.isFunction(composeContext)){
+      throw new Error('egg-vgg的配置项composeContext需要是个函数。');
+    }
+    context = _.extend({}, context, composeContext(context, ctx));
+
+    // 服务端输出。
+    try{
+      await ctx.render('vue-ssr-server-bundle.json',
+        // local context
+        context,
+        // render options
+        // 也可在egg-view-vue中配置。
+        {
+          renderOptions: {
+            // https://ssr.vuejs.org/zh/api.html#runinnewcontext
+            runInNewContext: false,
           }
-        )
-      }catch(e){
-        if(_.isNumber(e)){
-          ctx.throw(e);
-        }else if(_.isError(e)){
-          throw e;
-        }else{
-          throw new Error(e);
         }
+      )
+    }catch(e){
+      if(_.isNumber(e)){
+        ctx.throw(e);
+      }else if(_.isError(e)){
+        throw e;
+      }else{
+        throw new Error(e);
       }
-    };
-    await next();
+    }
   }
 }
 
