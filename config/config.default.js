@@ -48,6 +48,8 @@ module.exports = appInfo => {
       enableVConsole: false,
       // 是否开启service worker来缓存前端资源
       enableServiceWorker: false,
+      // 脚本允许跨域
+      crossorigin: true,
       // 下面是服务端渲染的相关配置：
       // vue ssr renderOptions.template's path
       // https://ssr.vuejs.org/zh/api.html#renderer-options

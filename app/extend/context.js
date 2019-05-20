@@ -1,5 +1,6 @@
 const path = require('path');
 const getAppTemplatePath = require('../../lib/get_app_template_path');
+const _ = require('lodash');
 
 module.exports = {
   /**
@@ -11,6 +12,17 @@ module.exports = {
    */
   render(name, locals, options){
     return render.bind(this)(this.app, name, locals, options).then(html => {
+      if(this.app.config.vgg.crossorigin){
+        let scripts = html.match(/<script\s.*?>/igm);
+        scripts = _.uniq(scripts);
+        for(let i = 0; i < scripts.length; i++){
+          let script = scripts[i];
+          if(script.indexOf('crossorigin="') < 0){
+            let newScript = script.replace('>', ' crossorigin="anonymous">');
+            html = html.replace(script, newScript);
+          }
+        }
+      }
       this.body = html;
     });
   }
